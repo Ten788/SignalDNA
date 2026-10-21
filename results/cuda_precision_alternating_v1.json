@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "benchmark_type": "cuda_precision_alternating_replication",
+  "batch_size": 64,
+  "examples": 8400,
+  "warmup_rounds": 2,
+  "measured_rounds": 5,
+  "alternating_order": true,
+  "times_seconds": {
+    "float64": [
+      0.12516630001482554,
+      0.12114500001189299,
+      0.11416340002324432,
+      0.12371519999578595,
+      0.12830350000876933
+    ],
+    "float32": [
+      0.25114619999658316,
+      0.25328169998829253,
+      0.25433940000948496,
+      0.2638708000013139,
+      0.27112550000310875
+    ]
+  },
+  "float32_speedup_over_float64": 0.48641775513810404,
+  "maximum_parameter_difference": 2.93148640528873e-07
+}

@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "benchmark_type": "cuda_batch_size_scaling",
+  "precision": "float64",
+  "examples": 8400,
+  "warmups": 2,
+  "repeats": 5,
+  "includes_tensor_setup_and_output_transfer": true,
+  "results": [
+    {
+      "batch_size": 32,
+      "steps_per_epoch": 263,
+      "times_seconds": [
+        0.2741665999928955,
+        0.25848519999999553,
+        0.26024730000062846,
+        0.2642853000143077,
+        0.2620891999977175
+      ],
+      "median_seconds": 0.2620891999977175,
+      "speedup_vs_batch64": 0.500476555329929
+    },
+    {
+      "batch_size": 64,
+      "steps_per_epoch": 132,
+      "times_seconds": [
+        0.13044440001249313,
+        0.13092380002490245,
+        0.13146630002302118,
+        0.1311695000040345,
+        0.1327576999901794
+      ],
+      "median_seconds": 0.1311695000040345,
+      "speedup_vs_batch64": 1.0
+    },
+    {
+      "batch_size": 128,
+      "steps_per_epoch": 66,
+      "times_seconds": [
+        0.08476100000552833,
+        0.07365310000022873,
+        0.07454980001784861,
+        0.07407010000315495,
+        0.07402579998597503
+      ],
+      "median_seconds": 0.07407010000315495,
+      "speedup_vs_batch64": 1.770883257865825
+    },
+    {
+      "batch_size": 256,
+      "steps_per_epoch": 33,
+      "times_seconds": [
+        0.04653469999902882,
+        0.05068620000383817,
+        0.0455558999965433,
+        0.05012369999894872,
+        0.04760219997842796
+      ],
+      "median_seconds": 0.04760219997842796,
+      "speedup_vs_batch64": 2.755534409407065
+    },
+    {
+      "batch_size": 512,
+      "steps_per_epoch": 17,
+      "times_seconds": [
+        0.04192459999467246,
+        0.03746430002502166,
+        0.03612289999728091,
+        0.035713400022359565,
+        0.04055030000745319
+      ],
+      "median_seconds": 0.03746430002502166,
+      "speedup_vs_batch64": 3.501186460615279
+    }
+  ]
+}

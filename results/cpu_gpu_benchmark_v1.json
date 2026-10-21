@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "benchmark_type": "exploratory_training_epoch",
+  "warmups": 2,
+  "measured_repeats": 5,
+  "examples": 8400,
+  "batch_size": 64,
+  "precision": "float64",
+  "includes_parameter_initialization": false,
+  "includes_gpu_tensor_allocation_and_transfers": true,
+  "measurements_seconds": {
+    "numpy_cpu": [
+      0.09651189998839982,
+      0.1020466000190936,
+      0.10071359999710694,
+      0.09642400001757778,
+      0.09871669998392463
+    ],
+    "pytorch_cuda": [
+      0.17557409999426454,
+      0.16250100001343526,
+      0.15699779998976737,
+      0.16737139999167994,
+      0.1814615000039339
+    ]
+  },
+  "median_gpu_over_cpu_time_ratio": 1.6954719922661037
+}
