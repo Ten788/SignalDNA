@@ -1,0 +1,41 @@
+"""Compare NumPy and CUDA after one complete 8,400-example epoch."""
+import sys
+import time
+from pathlib import Path
+import numpy as np
+
+root = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(root / "src"))
+from dataset import build_splits
+from neural_network import initialize_parameters, train_epoch, forward
+from gpu_training import train_epoch_cuda
+
+splits = build_splits(seed=2026)
+x, y = splits["train"]
+initial = initialize_parameters(seed=2026)
+
+started = time.perf_counter()
+cpu, _ = train_epoch(x, y.reshape(-1, 1), initial,
+                     learning_rate=0.01, batch_size=64, seed=3000)
+cpu_seconds = time.perf_counter() - started
+
+started = time.perf_counter()
+gpu = train_epoch_cuda(x, y.reshape(-1, 1), initial,
+                       learning_rate=0.01, batch_size=64, seed=3000)
+gpu_seconds = time.perf_counter() - started
+
+maximum = 0.0
+for index, ((cw, cb), (gw, gb)) in enumerate(zip(cpu, gpu)):
+    difference = max(
+        float(np.max(np.abs(cw - gw))),
+        float(np.max(np.abs(cb - gb))),
+    )
+    maximum = max(maximum, difference)
+    print(f"layer_{index}_difference={difference:.12g}")
+    assert np.allclose(cw, gw, rtol=1e-9, atol=1e-11)
+    assert np.allclose(cb, gb, rtol=1e-9, atol=1e-11)
+
+print(f"maximum_parameter_difference={maximum:.12g}")
+print(f"cpu_seconds={cpu_seconds:.6f}")
+print(f"gpu_seconds={gpu_seconds:.6f}")
+print("SIGNALDNA-CUDA-FULL-EPOCH-178: PASS")

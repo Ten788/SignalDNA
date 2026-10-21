@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "cpu_record": "results/numpy_cpu_60_epochs_logged.json",
+  "gpu_record": "results/pytorch_cuda_60_epochs_logged.json",
+  "epochs_compared": 61,
+  "maximum_absolute_differences": {
+    "training_accuracy": 0.0,
+    "training_loss": 1.1102230246251565e-16,
+    "validation_accuracy": 0.0,
+    "validation_loss": 2.220446049250313e-16,
+    "validation_auc": 0.0
+  },
+  "acceptance_tolerance": 1e-09,
+  "result": "PASS"
+}
