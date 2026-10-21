@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "project": "SignalDNA",
+  "paper_title": "SignalDNA: Building a Neural Network from Scratch with NumPy",
+  "research_program": "VERGE.io",
+  "phases": [
+    "M0: Requirements and architecture",
+    "M1: Synthetic signal generation and dataset",
+    "M2: NumPy neural network and deterministic training",
+    "M3: Evaluation and model improvement",
+    "Future: GPU implementation and CPU/GPU comparison"
+  ],
+  "dataset": {
+    "signal_length": 1024,
+    "sample_rate_hz": 2048,
+    "train_count": 8400,
+    "validation_count": 1800,
+    "test_count": 1800,
+    "seed": 2026,
+    "test_status": "untouched",
+    "classes": [
+      "Normal waveform",
+      "Waveform containing synthetic transient"
+    ]
+  },
+  "architecture": {
+    "layers": [
+      1024,
+      64,
+      32,
+      1
+    ],
+    "hidden_activation": "ReLU",
+    "output_activation": "Sigmoid",
+    "loss": "Binary cross-entropy",
+    "optimizer": "Mini-batch SGD",
+    "implementation": "NumPy",
+    "gradient_verification": "Finite-difference and batch-invariance tests passed"
+  },
+  "early_milestones": [
+    "Deterministic synthetic waveform and transient generator",
+    "Independent train/validation/test splits",
+    "Dense NumPy network with forward propagation",
+    "Analytical backpropagation and gradient verification",
+    "Reproducible SGD training",
+    "Safe NPZ checkpoint save/load with exact prediction roundtrip",
+    "Evaluation metrics and ROC-AUC regression tests"
+  ],
+  "experiments": [
+    {
+      "name": "Initial small training",
+      "train_count": 512,
+      "validation_count": 128,
+      "epochs": 3,
+      "validation_accuracy": 0.531,
+      "elapsed_seconds": 0.11
+    },
+    {
+      "name": "Early full training",
+      "train_count": 8400,
+      "validation_count": 1800,
+      "epochs": 10,
+      "validation_accuracy": 0.579,
+      "elapsed_seconds": 2.456
+    },
+    {
+      "name": "Reproducible saved-model baseline",
+      "epochs": 10,
+      "validation_accuracy": 0.584444,
+      "validation_auc": 0.607815,
+      "validation_f1": 0.608377,
+      "elapsed_seconds": 2.547
+    },
+    {
+      "name": "DSP adjacent-difference baseline",
+      "validation_accuracy": 0.4994
+    },
+    {
+      "name": "DSP high-pass residual baseline",
+      "validation_accuracy": 0.5672
+    },
+    {
+      "name": "Normalized neural network",
+      "epochs": 10,
+      "validation_accuracy": 0.5744,
+      "validation_auc": 0.6049,
+      "validation_f1": 0.5981
+    },
+    {
+      "name": "High-pass neural network",
+      "epochs": 10,
+      "validation_accuracy": 0.5006,
+      "validation_auc": 0.5101,
+      "validation_f1": 0.5266
+    },
+    {
+      "name": "Extended raw training",
+      "epochs": 30,
+      "validation_accuracy": 0.6678,
+      "validation_auc": 0.7419,
+      "elapsed_seconds": 6.954
+    },
+    {
+      "name": "Extended raw training",
+      "epochs": 60,
+      "training_accuracy": 0.9975,
+      "validation_accuracy": 0.7956,
+      "validation_auc": 0.8742,
+      "best_validation_loss_epoch": 48,
+      "elapsed_seconds": 10.457
+    }
+  ],
+  "learning_curve": [
+    [
+      0,
+      0.5094,
+      0.5283,
+      0.8157
+    ],
+    [
+      5,
+      0.5417,
+      0.5673,
+      0.693
+    ],
+    [
+      10,
+      0.5844,
+      0.6078,
+      0.6832
+    ],
+    [
+      15,
+      0.615,
+      0.6471,
+      0.6694
+    ],
+    [
+      20,
+      0.6317,
+      0.6816,
+      0.6577
+    ],
+    [
+      25,
+      0.6522,
+      0.711,
+      0.6477
+    ],
+    [
+      30,
+      0.6678,
+      0.7419,
+      0.639
+    ],
+    [
+      35,
+      0.6972,
+      0.7756,
+      0.6222
+    ],
+    [
+      40,
+      0.7311,
+      0.8091,
+      0.5947
+    ],
+    [
+      45,
+      0.7556,
+      0.8346,
+      0.5761
+    ],
+    [
+      50,
+      0.7711,
+      0.8516,
+      0.5717
+    ],
+    [
+      55,
+      0.7811,
+      0.8656,
+      0.5698
+    ],
+    [
+      60,
+      0.7956,
+      0.8742,
+      0.5745
+    ]
+  ],
+  "learning_curve_columns": [
+    "epoch",
+    "validation_accuracy",
+    "validation_auc",
+    "validation_loss"
+  ],
+  "future_gpu_comparison": {
+    "status": "planned",
+    "metrics": [
+      "Training runtime",
+      "Inference latency",
+      "Throughput",
+      "Numerical agreement",
+      "Validation accuracy",
+      "ROC-AUC",
+      "Memory consumption",
+      "Reproducibility"
+    ]
+  },
+  "notes": [
+    "Early values reconstructed from verified project results; some are rounded",
+    "Validation used for experimentation; held-out test remains untouched",
+    "Preserve failed experiments and negative results",
+    "Capture full per-epoch metrics automatically in future experiments",
+    "Do not claim independent external generalization from synthetic validation alone"
+  ],
+  "checkpoint_comparison": {
+    "best_validation_loss": {
+      "checkpoint": "numpy_best_validation.npz",
+      "epoch": 48,
+      "validation_loss": 0.5636705802831224,
+      "validation_auc": 0.8487753086419753,
+      "validation_accuracy": 0.7705555555555555,
+      "validation_precision": 0.7732884399551067,
+      "validation_recall": 0.7655555555555555,
+      "validation_f1": 0.7694025683975432
+    },
+    "final_60": {
+      "checkpoint": "numpy_final_60.npz",
+      "epoch": 60,
+      "validation_loss": 0.5745085134980361,
+      "validation_auc": 0.8741864197530864,
+      "validation_accuracy": 0.7955555555555556,
+      "validation_precision": 0.7942477876106194,
+      "validation_recall": 0.7977777777777778,
+      "validation_f1": 0.7960088691796009
+    }
+  }
+}

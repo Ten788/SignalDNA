@@ -1,0 +1,22 @@
+{
+  "best_validation_loss": {
+    "checkpoint": "numpy_best_validation.npz",
+    "epoch": 48,
+    "validation_loss": 0.5636705802831224,
+    "validation_auc": 0.8487753086419753,
+    "validation_accuracy": 0.7705555555555555,
+    "validation_precision": 0.7732884399551067,
+    "validation_recall": 0.7655555555555555,
+    "validation_f1": 0.7694025683975432
+  },
+  "final_60": {
+    "checkpoint": "numpy_final_60.npz",
+    "epoch": 60,
+    "validation_loss": 0.5745085134980361,
+    "validation_auc": 0.8741864197530864,
+    "validation_accuracy": 0.7955555555555556,
+    "validation_precision": 0.7942477876106194,
+    "validation_recall": 0.7977777777777778,
+    "validation_f1": 0.7960088691796009
+  }
+}
