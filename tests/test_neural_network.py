@@ -166,5 +166,22 @@ class TrainingEpochTests(unittest.TestCase):
             np.testing.assert_array_equal(w1, w2)
             np.testing.assert_array_equal(b1, b2)
 
+class CheckpointTests(unittest.TestCase):
+    def test_save_load_round_trip(self):
+        import tempfile
+        from neural_network import save_parameters, load_parameters
+        params = initialize_parameters(seed=131)
+        inputs = np.random.default_rng(132).normal(size=(4, 1024))
+        before, _ = forward(inputs, params)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "model.npz"
+            save_parameters(path, params)
+            restored = load_parameters(path)
+        after, _ = forward(inputs, restored)
+        np.testing.assert_array_equal(before, after)
+        for (w1, b1), (w2, b2) in zip(params, restored):
+            np.testing.assert_array_equal(w1, w2)
+            np.testing.assert_array_equal(b1, b2)
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

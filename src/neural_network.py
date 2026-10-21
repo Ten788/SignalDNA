@@ -177,3 +177,46 @@ def train_epoch(inputs, labels, parameters, learning_rate=0.01, batch_size=64, s
         current = sgd_step(current, gradients, learning_rate)
     probabilities, _ = forward(x, current)
     return current, binary_cross_entropy(probabilities, y)
+def save_parameters(path, parameters):
+    """Save dense-layer parameters in NumPy's non-pickle NPZ format.
+
+    Layer arrays are stored under stable, indexed keys for portability.
+    Reject malformed or nonfinite parameters before writing.
+    """
+    if len(parameters) != len(LAYER_SIZES) - 1:
+        raise ValueError("Unexpected parameter count")
+    arrays = {}
+    for index, ((weights, biases), fan_in, fan_out) in enumerate(
+        zip(parameters, LAYER_SIZES[:-1], LAYER_SIZES[1:])
+    ):
+        if weights.shape != (fan_in, fan_out) or biases.shape != (fan_out,):
+            raise ValueError("Parameter shape mismatch")
+        if not np.isfinite(weights).all() or not np.isfinite(biases).all():
+            raise ValueError("Non-finite parameter")
+        arrays[f"weights_{index}"] = weights
+        arrays[f"biases_{index}"] = biases
+    np.savez(path, **arrays)
+def load_parameters(path):
+    """Load and validate a NumPy model checkpoint without pickle.
+
+    Only the expected dense-layer arrays are accepted. Invalid
+    shapes, nonfinite values, or extra archive entries are rejected.
+    """
+    expected = {
+        f"{kind}_{index}"
+        for index in range(len(LAYER_SIZES) - 1)
+        for kind in ("weights", "biases")
+    }
+    parameters = []
+    with np.load(path, allow_pickle=False) as archive:
+        if set(archive.files) != expected:
+            raise ValueError("Checkpoint array names do not match architecture")
+        for index, (fan_in, fan_out) in enumerate(zip(LAYER_SIZES[:-1], LAYER_SIZES[1:])):
+            weights = np.asarray(archive[f"weights_{index}"], dtype=np.float64)
+            biases = np.asarray(archive[f"biases_{index}"], dtype=np.float64)
+            if weights.shape != (fan_in, fan_out) or biases.shape != (fan_out,):
+                raise ValueError("Checkpoint parameter shape mismatch")
+            if not np.isfinite(weights).all() or not np.isfinite(biases).all():
+                raise ValueError("Non-finite checkpoint parameter")
+            parameters.append((weights.copy(), biases.copy()))
+    return parameters
