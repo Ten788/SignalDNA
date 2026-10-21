@@ -1,0 +1,15 @@
+{
+    "schema_version":  1,
+    "benchmark_type":  "cuda_epoch_component_profile",
+    "warmups":  2,
+    "repeats":  5,
+    "precision":  "float64",
+    "source_log":  "cuda-profile-stdout.txt",
+    "measurements_seconds":  {
+                                 "setup_seconds_median":  0.010057,
+                                 "output_transfer_seconds_median":  0.000403,
+                                 "total_seconds_median":  0.177776,
+                                 "training_seconds_median":  0.167343
+                             },
+    "note":  "Medians of components need not sum to median total"
+}
