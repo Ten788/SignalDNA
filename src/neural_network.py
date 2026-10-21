@@ -93,3 +93,87 @@ def binary_cross_entropy(probabilities, labels):
     eps = np.finfo(np.float64).eps
     p = np.clip(p, eps, 1.0 - eps)
     return float(-np.mean(y * np.log(p) + (1.0 - y) * np.log1p(-p)))
+def backward(activations, parameters, labels):
+    """Compute mean-loss gradients for each dense layer.
+
+    Args:
+        activations: Forward cache ordered input, hidden layers, output.
+        parameters: Layer (weights, biases) pairs matching the cache.
+        labels: Binary targets shaped (batch, 1).
+
+    Returns:
+        List of (weight_gradient, bias_gradient) pairs in layer order.
+
+    Notes:
+        Sigmoid with binary cross-entropy yields output delta p - y.
+        ReLU propagates gradients only through positive activations.
+        Gradients are averaged over the batch.
+    """
+    p = np.asarray(activations[-1], dtype=np.float64)
+    y = np.asarray(labels, dtype=np.float64)
+    if p.ndim != 2 or p.shape[1] != 1 or p.shape[0] == 0:
+        raise ValueError("Invalid cached output shape")
+    if y.shape != p.shape or not np.isfinite(y).all() or not np.all((y == 0) | (y == 1)):
+        raise ValueError("Labels must be binary and match output shape")
+    if len(parameters) != len(LAYER_SIZES) - 1 or len(activations) != len(LAYER_SIZES):
+        raise ValueError("Layer count mismatch")
+    if not all(np.isfinite(a).all() for a in activations):
+        raise ValueError("Non-finite cached activation")
+    delta = (p - y) / p.shape[0]
+    gradients = [None] * len(parameters)
+    for layer in range(len(parameters) - 1, -1, -1):
+        weights, biases = parameters[layer]
+        previous = activations[layer]
+        if weights.shape != (LAYER_SIZES[layer], LAYER_SIZES[layer + 1]) or biases.shape != (LAYER_SIZES[layer + 1],):
+            raise ValueError("Parameter shape mismatch")
+        gradients[layer] = (previous.T @ delta, np.sum(delta, axis=0))
+        if layer:
+            delta = (delta @ weights.T) * (activations[layer] > 0)
+    return gradients
+def sgd_step(parameters, gradients, learning_rate):
+    """Return updated parameters after one gradient-descent step.
+
+    Each parameter is reduced by the learning rate times its gradient.
+    The original parameter arrays are preserved.
+
+    Raises:
+        ValueError: For invalid learning rates, gradients, or shapes.
+    """
+    if not np.isfinite(learning_rate) or learning_rate <= 0:
+        raise ValueError("Learning rate must be positive and finite")
+    if len(parameters) != len(gradients):
+        raise ValueError("Parameter and gradient counts differ")
+    updated = []
+    for (weights, biases), (dw, db) in zip(parameters, gradients):
+        if dw.shape != weights.shape or db.shape != biases.shape:
+            raise ValueError("Gradient shape mismatch")
+        if not np.isfinite(dw).all() or not np.isfinite(db).all():
+            raise ValueError("Non-finite gradient")
+        updated.append((weights - learning_rate * dw, biases - learning_rate * db))
+    return updated
+def train_epoch(inputs, labels, parameters, learning_rate=0.01, batch_size=64, seed=2026):
+    """Train for one shuffled epoch and return updated parameters.
+
+    The seed controls example order, making each epoch reproducible.
+    Mini-batch gradients use mean binary cross-entropy loss.
+    The returned loss is evaluated after all parameter updates.
+    """
+    x = np.asarray(inputs, dtype=np.float64)
+    y = np.asarray(labels, dtype=np.float64)
+    if x.ndim != 2 or x.shape[1] != LAYER_SIZES[0] or x.shape[0] == 0:
+        raise ValueError("Invalid training input shape")
+    if y.shape != (x.shape[0], 1):
+        raise ValueError("Training labels must have shape (batch, 1)")
+    if not isinstance(batch_size, (int, np.integer)) or isinstance(batch_size, (bool, np.bool_)) or batch_size <= 0:
+        raise ValueError("Batch size must be a positive integer")
+    if not np.isfinite(x).all() or not np.isfinite(y).all() or not np.all((y == 0) | (y == 1)):
+        raise ValueError("Training data must be finite with binary labels")
+    order = np.random.default_rng(seed).permutation(x.shape[0])
+    current = parameters
+    for start in range(0, x.shape[0], batch_size):
+        indices = order[start:start + batch_size]
+        _, cache = forward(x[indices], current)
+        gradients = backward(cache, current, y[indices])
+        current = sgd_step(current, gradients, learning_rate)
+    probabilities, _ = forward(x, current)
+    return current, binary_cross_entropy(probabilities, y)

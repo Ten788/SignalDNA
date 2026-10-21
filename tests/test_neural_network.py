@@ -75,5 +75,96 @@ class LossTests(unittest.TestCase):
         for p, y in ((np.ones((2, 1)), np.ones((2,))), (np.array([[1.2]]), np.array([[1]])), (np.array([[0.5]]), np.array([[2]]))):
             with self.assertRaises(ValueError):
                 binary_cross_entropy(p, y)
+class BackwardTests(unittest.TestCase):
+    def test_gradient_shapes_and_finiteness(self):
+        from neural_network import backward
+        parameters = initialize_parameters(seed=71)
+        inputs = np.random.default_rng(72).normal(size=(4, 1024))
+        labels = np.array([[0.0], [1.0], [1.0], [0.0]])
+        _, activations = forward(inputs, parameters)
+        gradients = backward(activations, parameters, labels)
+        self.assertEqual(len(gradients), len(parameters))
+        for (dw, db), (weights, biases) in zip(gradients, parameters):
+            self.assertEqual(dw.shape, weights.shape)
+            self.assertEqual(db.shape, biases.shape)
+            self.assertTrue(np.isfinite(dw).all())
+            self.assertTrue(np.isfinite(db).all())
+
+class GradientCheckTests(unittest.TestCase):
+    def test_finite_difference_gradients(self):
+        from neural_network import backward
+        rng = np.random.default_rng(81)
+        params = initialize_parameters(seed=82)
+        x = rng.normal(0.0, 0.2, size=(3, 1024))
+        y = np.array([[0.0], [1.0], [0.0]])
+        _, cache = forward(x, params)
+        gradients = backward(cache, params, y)
+        step = 1e-5
+
+        def loss():
+            probabilities, _ = forward(x, params)
+            return binary_cross_entropy(probabilities, y)
+
+        for layer, ((weights, biases), (dw, db)) in enumerate(zip(params, gradients)):
+            for values, analytical in ((weights, dw), (biases, db)):
+                for index in list(np.ndindex(values.shape))[:4]:
+                    original = values[index]
+                    values[index] = original + step
+                    plus = loss()
+                    values[index] = original - step
+                    minus = loss()
+                    values[index] = original
+                    numerical = (plus - minus) / (2 * step)
+                    self.assertAlmostEqual(
+                        analytical[index], numerical, delta=1e-5,
+                        msg=f"Gradient mismatch at layer {layer}, index {index}"
+                    )
+
+class BatchGradientTests(unittest.TestCase):
+    def test_batch_duplication_invariance(self):
+        from neural_network import backward
+        params = initialize_parameters(seed=101)
+        x = np.random.default_rng(102).normal(0, 0.2, size=(3, 1024))
+        y = np.array([[0.0], [1.0], [0.0]])
+        _, single_cache = forward(x, params)
+        _, repeated_cache = forward(np.tile(x, (2, 1)), params)
+        single = backward(single_cache, params, y)
+        repeated = backward(repeated_cache, params, np.tile(y, (2, 1)))
+        for (dw1, db1), (dw2, db2) in zip(single, repeated):
+            np.testing.assert_allclose(dw1, dw2, rtol=1e-12, atol=1e-12)
+            np.testing.assert_allclose(db1, db2, rtol=1e-12, atol=1e-12)
+
+class SgdTests(unittest.TestCase):
+    def test_step_reduces_loss_without_mutation(self):
+        from neural_network import backward, sgd_step
+        params = initialize_parameters(seed=111)
+        original = [(w.copy(), b.copy()) for w, b in params]
+        x = np.random.default_rng(112).normal(0, 0.2, size=(8, 1024))
+        y = np.array([[0], [1], [0], [1], [0], [1], [0], [1]])
+        predictions, cache = forward(x, params)
+        before = binary_cross_entropy(predictions, y)
+        gradients = backward(cache, params, y)
+        updated = sgd_step(params, gradients, learning_rate=0.01)
+        after = binary_cross_entropy(forward(x, updated)[0], y)
+        self.assertLess(after, before)
+        for (w, b), (ow, ob) in zip(params, original):
+            np.testing.assert_array_equal(w, ow)
+            np.testing.assert_array_equal(b, ob)
+
+class TrainingEpochTests(unittest.TestCase):
+    def test_epoch_learning_and_reproducibility(self):
+        from neural_network import train_epoch
+        x = np.random.default_rng(121).normal(0, 0.2, size=(32, 1024))
+        y = np.array([[i % 2] for i in range(32)], dtype=np.float64)
+        initial = initialize_parameters(seed=122)
+        before = binary_cross_entropy(forward(x, initial)[0], y)
+        first, first_loss = train_epoch(x, y, initial, learning_rate=0.01, batch_size=8, seed=123)
+        second, second_loss = train_epoch(x, y, initial, learning_rate=0.01, batch_size=8, seed=123)
+        self.assertLess(first_loss, before)
+        self.assertEqual(first_loss, second_loss)
+        for (w1, b1), (w2, b2) in zip(first, second):
+            np.testing.assert_array_equal(w1, w2)
+            np.testing.assert_array_equal(b1, b2)
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
