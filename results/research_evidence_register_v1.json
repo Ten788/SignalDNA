@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "project": "SignalDNA",
+  "purpose": "Traceable research-paper evidence",
+  "sources": {
+    "cpu_learning": {
+      "path": "results/numpy_cpu_60_epochs_logged.json",
+      "sha256": "2d71140080e33d1d4c9e6818fc3570eb9ff8b2423aee0b022b03883e39e98983",
+      "schema_version": 1
+    },
+    "gpu_learning": {
+      "path": "results/pytorch_cuda_60_epochs_logged.json",
+      "sha256": "409047bdf391ae117cf272e31c0707f9b5d85e6296d0e256d34f16388b52d48e",
+      "schema_version": 1
+    },
+    "curve_equivalence": {
+      "path": "results/cpu_gpu_curve_comparison.json",
+      "sha256": "a3671ca481d26ae62910d013132afbd3fc6733e86d8e5f403e0d76eae3cb69b1",
+      "schema_version": 1
+    },
+    "backend_benchmark": {
+      "path": "results/cpu_gpu_benchmark_v1.json",
+      "sha256": "d0fd9162bef68c29b356a1996386438f21764e90dd5f91e8f1059d307a6c8f20",
+      "schema_version": 1
+    },
+    "batch_scaling": {
+      "path": "results/cuda_batch_scaling_v1.json",
+      "sha256": "a97d413a3efb9b52cdfbfc9c55ab2d0f4e576442c50dd25b861412f99a0f486a",
+      "schema_version": 1
+    },
+    "precision": {
+      "path": "results/cuda_precision_v1.json",
+      "sha256": "a34a5085949f38907d89fe8583067d9eef1c34ffe5f0db91e97c954eebd2148d",
+      "schema_version": 1
+    },
+    "precision_replication": {
+      "path": "results/cuda_precision_alternating_v1.json",
+      "sha256": "cd22f47119604086a9ebb20d93a3ce02d9ab7c8033cbc6a56317c35d67f68f1e",
+      "schema_version": 1
+    },
+    "tf32": {
+      "path": "results/cuda_tf32_v1.json",
+      "sha256": "ba0757b91b2902941d636ea7556db643737dbfbe2bf90654c41943970ba4c23a",
+      "schema_version": 1
+    },
+    "cuda_profile": {
+      "path": "results/cuda_profile_v1.json",
+      "sha256": "7b4a866829ae38936b437cfc3d2483dca830cc15ced8f6ede2f63cbe760e38f7",
+      "schema_version": 1
+    },
+    "workload_scaling": {
+      "path": "results/cpu_gpu_workload_scaling_v1.json",
+      "sha256": "3e64a85a5397c471fe874fae35e3c2e35abb7592e07bb300f38a727f200cc6fe",
+      "schema_version": 1
+    }
+  },
+  "findings": {
+    "cpu_gpu_learning_curve_equivalence": {
+      "source": "curve_equivalence",
+      "epochs": 61,
+      "maximum_absolute_differences": {
+        "training_accuracy": 0.0,
+        "training_loss": 1.1102230246251565e-16,
+        "validation_accuracy": 0.0,
+        "validation_loss": 2.220446049250313e-16,
+        "validation_auc": 0.0
+      },
+      "limitation": "Same data, initialization and training procedure; not independent generalization replication"
+    },
+    "final_cpu_validation": {
+      "source": "cpu_learning",
+      "training_accuracy": 0.9975,
+      "validation_accuracy": 0.7955555555555556,
+      "validation_auc": 0.8741864197530864,
+      "limitation": "Validation results only; held-out test evaluation pending"
+    },
+    "workload_performance": {
+      "source": "workload_scaling",
+      "gpu_over_cpu_ratios": [
+        {
+          "examples": 256,
+          "ratio": 1.629789823420907
+        },
+        {
+          "examples": 1024,
+          "ratio": 1.3541038863665626
+        },
+        {
+          "examples": 4096,
+          "ratio": 1.5061791720036415
+        },
+        {
+          "examples": 8400,
+          "ratio": 1.7163770709176789
+        }
+      ],
+      "limitation": "One machine, float64, batch 64, current implementations"
+    }
+  },
+  "publication_status": "Evidence inventory complete; manuscript and final evaluation pending"
+}

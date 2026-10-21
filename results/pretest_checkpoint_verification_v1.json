@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "purpose": "Locked pre-test checkpoint validation",
+  "test_set_accessed": false,
+  "selection_rule": "Primary: maximum validation ROC-AUC, earliest tie",
+  "classification_threshold": 0.5,
+  "candidates": [
+    {
+      "role": "primary",
+      "epoch": 60,
+      "checkpoint": "checkpoints/numpy_final_60.npz",
+      "sha256": "846137EE4333F7FAC7990E29FD6F7D0EAA59E6D1153F9A6BF6775F9C21A72975",
+      "validation_metrics": {
+        "validation_accuracy": 0.7955555555555556,
+        "validation_loss": 0.5745085134980361,
+        "validation_auc": 0.8741864197530864
+      }
+    },
+    {
+      "role": "secondary",
+      "epoch": 48,
+      "checkpoint": "checkpoints/numpy_best_validation.npz",
+      "sha256": "1D1D72CD6D68659AE9DD4001AC21842A59921CDF9807910966B03EC2B938A243",
+      "validation_metrics": {
+        "validation_accuracy": 0.7705555555555555,
+        "validation_loss": 0.5636705802831224,
+        "validation_auc": 0.8487753086419753
+      }
+    }
+  ]
+}
