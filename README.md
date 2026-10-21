@@ -49,7 +49,7 @@ Verify the evaluation metrics using synthetic test vectors:
 
     .\.venv\Scripts\python.exe experiments\verify_evaluation_independent.py
 
-The provided dependency lockfile covers NumPy and plotting libraries, but not PyTorch. GPU experiments require a separately installed compatible PyTorch CUDA build. See docs/REPRODUCIBILITY.md.
+The provided dependency lockfile covers NumPy and plotting libraries, but not PyTorch. GPU experiments require a separately installed compatible PyTorch CUDA build. See docs/REPRODUCIBILITY.md and docs/GPU_SETUP.md.
 
 ## Documentation
 
