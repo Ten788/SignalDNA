@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "evaluation_type": "final_heldout_primary_single_attempt",
+  "checkpoint": "checkpoints/numpy_final_60.npz",
+  "checkpoint_sha256": "846137EE4333F7FAC7990E29FD6F7D0EAA59E6D1153F9A6BF6775F9C21A72975",
+  "selected_epoch": 60,
+  "selection_basis": "maximum validation ROC-AUC; earliest tie",
+  "threshold": 0.5,
+  "test_count": 1800,
+  "positive_count": 900,
+  "negative_count": 900,
+  "parent_seed": 2026,
+  "test_child_seed": 1818751028,
+  "validation_metrics": {
+    "validation_accuracy": 0.7955555555555556,
+    "validation_loss": 0.5745085134980361,
+    "validation_auc": 0.8741864197530864
+  },
+  "test_metrics": {
+    "tp": 700,
+    "tn": 718,
+    "fp": 182,
+    "fn": 200,
+    "accuracy": 0.7877777777777778,
+    "precision": 0.7936507936507936,
+    "recall": 0.7777777777777778,
+    "f1": 0.7856341189674523,
+    "roc_auc": 0.8612641975308643,
+    "binary_cross_entropy": 0.6111594047177068
+  },
+  "test_minus_validation": {
+    "accuracy": -0.007777777777777772,
+    "roc_auc": -0.012922222222222168,
+    "loss": 0.03665089121967069
+  },
+  "test_informed_tuning_performed": false,
+  "attempt_lock": "results/heldout_evaluation_attempt_v1.json"
+}

@@ -105,3 +105,12 @@ Pending final evaluation, evidence audit, and manuscript review.
 ## References
 
 Pending verification of authoritative technical references.
+## Research Motivation and Personal Learning Objectives
+
+SignalDNA began as a practical exploration of neural networks and their potential relevance to my work in embedded systems and FPGA development. My long-term objective is to investigate whether these methods can meaningfully assist with hardware design, verification, testing, and engineering problem-solving in future projects.
+
+Rather than beginning with a pretrained model, I chose to implement a neural network from first principles. This allowed me to examine data representation, forward propagation, backpropagation, optimization, and evaluation before exploring hardware-accelerated implementations.
+
+The project has been both an educational experiment and an enjoyable engineering challenge. It has provided a clearer understanding of neural-network behavior, controlled experimentation, and CPU/GPU computational trade-offs. It has also made clear how much remains to be learned.
+
+SignalDNA is an early step toward a broader machine-learning skill set, not a demonstration that neural networks already improve FPGA or embedded engineering workflows. Future work will investigate those applications through measurable engineering outcomes, hardware constraints, reproducibility, and practical usefulness.
