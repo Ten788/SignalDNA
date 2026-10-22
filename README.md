@@ -58,6 +58,7 @@ The provided dependency lockfile covers NumPy and plotting libraries, but not Py
 - Locked evaluation protocol: docs/FINAL_EVALUATION_PROTOCOL.md
 - Verification scope: docs/PUBLIC_VERIFICATION_SCOPE.md
 - Reproducibility guide: docs/REPRODUCIBILITY.md
+- Checkpoint reconstruction: docs/CHECKPOINT_RECONSTRUCTION.md
 - Experimental records: results/
 
 ## Limitations and future work

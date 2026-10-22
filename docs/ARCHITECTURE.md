@@ -52,3 +52,17 @@ Record hardware, software versions, warmup, repeated timings, transfer overhead,
 Report accuracy, reproducibility, performance, and limitations without assuming GPU superiority.
 CPU-only operation remains supported; no paid APIs or cloud services.
 Publish reproducible methodology and results only after verification.
+
+## Final Implementation Reconciliation
+
+Status: Completed research implementation; the preceding M0 proposal is retained as historical planning evidence.
+
+- Implemented architecture: 1024 input samples, 64 and 32 ReLU hidden units, and one sigmoid output.
+- Original NumPy forward propagation, gradients, mini-batch SGD, and checkpoint serialization were implemented.
+- Primary recorded training: 60 epochs, batch size 64, learning rate 0.01, deterministic seeds.
+- The proposed 100-epoch maximum and patience-12 early-stopping policy do not describe the primary 60-epoch run.
+- Input normalization was explored separately; it is not established as part of the primary evaluation pipeline.
+- Minimum-validation-loss checkpoint selection and byte-identical checkpoint reconstruction were verified.
+- PyTorch CUDA training and numerical-equivalence experiments were completed for documented configurations.
+- CPU/GPU timings include workload-specific overhead; universal acceleration, deployment performance, and GPU-memory characterization are not established by the primary benchmark.
+- Real sensor validation, embedded deployment, and FPGA acceleration remain future work.

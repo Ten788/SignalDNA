@@ -1,6 +1,6 @@
 {
   "source": "docs\\publication\\SignalDNA_Research_Paper_DRAFT.pdf",
-  "sha256": "5bbe0a91610864005eb687a3a5e91059fb71e6f689b4f9cc301749e4d8dc3cbd",
+  "sha256": "c493155a2b3aed0cd61bc11349274fb3b7a53457d0ac92a813608df0c326c21c",
   "pages": [
     {
       "page": 1,
@@ -22,7 +22,7 @@
     },
     {
       "page": 4,
-      "characters": 1088,
+      "characters": 1172,
       "embedded_images": 0,
       "boundary_flags": []
     },
@@ -34,13 +34,13 @@
     },
     {
       "page": 6,
-      "characters": 2139,
+      "characters": 2314,
       "embedded_images": 1,
       "boundary_flags": []
     },
     {
       "page": 7,
-      "characters": 3019,
+      "characters": 3170,
       "embedded_images": 0,
       "boundary_flags": []
     }

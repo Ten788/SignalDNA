@@ -123,7 +123,7 @@ The primary model was evaluated on 1,800 balanced synthetic signals.
 
 Among 900 transient-containing waveforms, 700 were correctly detected and 200 were missed. Among 900 background waveforms, 718 were correctly rejected and 182 generated false alarms.
 
-Accuracy decreased from 79.56% on validation to 78.78% on the held-out test, a decline of 0.78 percentage points. ROC-AUC declined from 0.8742 to 0.8613, while binary cross-entropy increased from 0.5745 to 0.6112.
+Observed accuracy was 79.56% on validation and 78.78% on the held-out test, a difference of 0.78 percentage points. This descriptive difference was not subjected to a statistical significance test. ROC-AUC declined from 0.8742 to 0.8613, while binary cross-entropy increased from 0.5745 to 0.6112.
 
 Training accuracy reached approximately 99.75%, substantially exceeding held-out accuracy. This generalization gap indicates that the learned training performance did not fully transfer to independently generated examples.
 
@@ -155,7 +155,7 @@ The computational results also challenge a simplistic assumption that a GPU must
 
 A major practical lesson is the importance of verification discipline: comparing independent implementations, maintaining immutable evidence, separating validation from held-out testing, and preserving unexpected negative results.
 
-PyTorch documents asynchronous CUDA execution and the need for synchronization or CUDA events when measuring device execution time [3]. Benchmark timing boundaries must be reviewed against the archived scripts before publication.
+PyTorch documents asynchronous CUDA execution and the need for synchronization or CUDA events when measuring device execution time [3]. The primary benchmark times complete training-function calls; the CUDA function explicitly synchronizes and returns CPU-transferred parameters before timing stops. Reported times therefore include setup and transfer overhead rather than isolating GPU kernel execution.
 
 ## 5. Limitations
 
@@ -167,7 +167,7 @@ Performance findings apply only to the tested hardware, software, batch sizes, a
 
 ## 6. Reproducibility and Evidence
 
-The repository contains source code, experiments, checkpoints, archived JSON results, and a research evidence register at `results/research_evidence_register_v1.json`.
+The repository contains source code, experiments, archived JSON results, and a research evidence register at `results/research_evidence_register_v1.json`. Checkpoint binaries are excluded from Git but were reconstructed byte-for-byte from committed source in an isolated checkout using the recorded Python environment.
 
 The final primary checkpoint and held-out results have recorded SHA-256 fingerprints. The evaluation attempt was locked against automatic repetition.
 

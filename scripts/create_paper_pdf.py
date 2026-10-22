@@ -8,8 +8,10 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Image, Table, TableStyle, KeepTogether, Spacer, HRFlowable
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Image, Table, TableStyle, KeepTogether, Spacer, HRFlowable, PageBreak
 
+import matplotlib
+dejavu_fonts = Path(matplotlib.get_data_path()) / 'fonts' / 'ttf'
 root = Path(__file__).resolve().parents[1]
 src = root / 'docs/RESEARCH_PAPER.md'
 figdir = root / 'docs/figures'
@@ -25,10 +27,10 @@ def font(name, paths, fallback):
             return name
     return fallback
 
-body = font('GeorgiaPaper', ['C:/Windows/Fonts/georgia.ttf', '/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf'], 'Times-Roman')
-bodybold = font('GeorgiaPaperBold', ['C:/Windows/Fonts/georgiab.ttf', '/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf'], 'Times-Bold')
-head = font('SegoePaper', ['C:/Windows/Fonts/segoeui.ttf', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'], 'Helvetica')
-headbold = font('SegoePaperBold', ['C:/Windows/Fonts/segoeuib.ttf', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'], 'Helvetica-Bold')
+body = font('GeorgiaPaper', [str(dejavu_fonts / 'DejaVuSerif.ttf')], 'Times-Roman')
+bodybold = font('GeorgiaPaperBold', [str(dejavu_fonts / 'DejaVuSerif-Bold.ttf')], 'Times-Bold')
+head = font('SegoePaper', [str(dejavu_fonts / 'DejaVuSans.ttf')], 'Helvetica')
+headbold = font('SegoePaperBold', [str(dejavu_fonts / 'DejaVuSans-Bold.ttf')], 'Helvetica-Bold')
 pdfmetrics.registerFontFamily(body, normal=body, bold=bodybold)
 navy, blue, gray = (colors.HexColor(x) for x in ('#162944', '#23648D', '#52627A'))
 
@@ -110,6 +112,7 @@ while i < len(lines):
         section = s[4 if sub else 3:].strip()
         if not sub:
             mode = 'abstract' if section == 'Abstract' else 'ref' if section == 'References' else ''
+        if section == 'References': story.append(PageBreak())
         story.append(Paragraph(escape(section.upper() if mode == 'abstract' and not sub else section), styles['h2' if sub else 'h1']))
         i += 1
         continue

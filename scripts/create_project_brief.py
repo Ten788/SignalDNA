@@ -46,10 +46,11 @@ assert str(comparison["result"]).upper() == "PASS"
 difference = max(float(v) for v in comparison["maximum_absolute_differences"].values())
 assert difference < 1e-12
 
-fontdir = Path("C:/Windows/Fonts")
-pdfmetrics.registerFont(TTFont("BriefRegular", str(fontdir / "segoeui.ttf")))
-pdfmetrics.registerFont(TTFont("BriefBold", str(fontdir / "segoeuib.ttf")))
-pdfmetrics.registerFont(TTFont("BriefGeorgia", str(fontdir / "georgia.ttf")))
+import matplotlib
+fontdir = Path(matplotlib.get_data_path()) / 'fonts' / 'ttf'
+pdfmetrics.registerFont(TTFont("BriefRegular", str(fontdir / "DejaVuSans.ttf")))
+pdfmetrics.registerFont(TTFont("BriefBold", str(fontdir / "DejaVuSans-Bold.ttf")))
+pdfmetrics.registerFont(TTFont("BriefGeorgia", str(fontdir / "DejaVuSerif.ttf")))
 
 navy = HexColor("#132842")
 blue = HexColor("#23699B")
@@ -102,119 +103,42 @@ def header(section):
 def footer(page):
     c.setStrokeColor(HexColor("#D9E1E9"))
     c.line(44, 43, 568, 43)
-    text(44, 28, "David Boring  |  October 2026  |  Software: Apache-2.0", 7.5, muted)
-    text(462, 28, f"{page} / 2  |  Not peer reviewed", 7.2, muted)
-
-def metric_card(x, value, label, color=navy):
-    panel(x, 593, 168, 72)
-    text(x+13, 626, value, 20, color, True)
-    text(x+13, 606, label, 8, muted)
-
-# PAGE ONE — PROJECT AND CLASSIFICATION
-header("RESEARCH OVERVIEW")
-text(44, 708, "SignalDNA", 29, navy, True)
-text(44, 683, "Learning neural networks from first principles", 12, muted)
-
-metric_card(44, f"{accuracy*100:.2f}%", "Held-out accuracy")
-metric_card(222, f"{auc:.4f}", "Held-out ROC-AUC", blue)
-metric_card(400, "67,713", "Network parameters", orange)
-
-text(44, 569, "THE EXPERIMENT", 10, blue, True)
-paragraph(
-    "Built to learn neural networks from first principles and explore "
-    "future FPGA and embedded engineering applications, SignalDNA "
-    "uses a NumPy reference network to classify synthetic transients. "
-    "It examines generalization, numerical equivalence and CPU/GPU performance.",
-    44, 556, 524, limit=52
-)
-
-panel(44, 431, 524, 65)
-text(58, 478, "NETWORK ARCHITECTURE", 9, blue, True)
-text(58, 455, "1024 inputs   >   64 ReLU   >   32 ReLU   >   1 sigmoid",
-     12, navy, True)
-text(58, 440, "12,000 balanced signals  |  1,800 held-out  |  2,048 Hz  |  0.5 s  |  60 epochs",
-     8.2, muted)
-
-panel(44, 104, 524, 315)
-text(60, 396, "01  /  TRAINING AND GENERALIZATION", 10, navy, True)
-image_fit("learning_accuracy.png", 60, 132, 492, 252)
-text(60, 116, "Figure 1. Archived training and validation accuracy, epochs 0-60.",
-     7.8, muted)
-
-text(44, 85,
-     f"Training {train*100:.2f}%  /  Validation {validation*100:.2f}%  /  Test {accuracy*100:.2f}%",
-     9.2, navy, True)
-text(44, 68, "A substantial generalization gap remains despite high training accuracy.",
-     8.4, muted)
+    text(44, 28, "SignalDNA  |  Independent research  |  Apache-2.0", 7.2, muted)
+    text(447, 28, "1 / 1  |  Not peer reviewed", 7.0, muted)
+header("ONE-PAGE RESEARCH BRIEF")
+text(44, 713, "SignalDNA", 28, navy, True)
+text(44, 688, "Neural networks from first principles | Synthetic transient detection", 9.4, muted)
+for x,value,label in [(44,f"{accuracy*100:.2f}%","Held-out accuracy"),(222,f"{auc:.4f}","Held-out ROC-AUC"),(400,"67,713","Parameters")]:
+    panel(x,610,168,60)
+    text(x+12,638,value,18,navy,True)
+    text(x+12,620,label,7.6,muted)
+paragraph("Original NumPy network: 1024 inputs, 64 and 32 ReLU units, 1 sigmoid output. Trained on balanced synthetic transients; 12,000 signals, 1,800 held out. Motivation: learning AI before exploring embedded and FPGA applications.",44,598,524,size=8.2,leading=11.4,limit=48)
+panel(44,338,254,205)
+panel(310,338,258,205)
+text(55,522,"TRAINING & GENERALIZATION",8.5,blue,True)
+text(321,522,"CPU VS CUDA",8.5,blue,True)
+image_fit("learning_accuracy.png",54,365,234,145)
+image_fit("cpu_cuda_epoch_benchmark.png",320,365,238,145)
+text(54,351,"60 epochs; train vs. validation",7.2,muted)
+text(320,351,"Five warmed-up runs; float64, batch 64",7.2,muted)
+text(44,317,f"Train {train*100:.2f}%  |  Validation {validation*100:.2f}%  |  Held-out {accuracy*100:.2f}%",9,navy,True)
+text(44,299,f"Median epoch: CPU {cpu:.2f} ms  |  CUDA {gpu:.2f} ms  |  GPU/CPU {ratio:.2f}x",8.8,navy,True)
+panel(44,178,524,105)
+text(56,265,"WHAT THE EXPERIMENTS SHOW",9,blue,True)
+paragraph(f"Training accuracy greatly exceeded validation accuracy: generalization remains the central challenge. CPU and CUDA metrics matched at 61 archived checkpoints (maximum absolute difference {difference:.2e}); the CPU was faster for this specific small workload. CUDA timings include synchronization and CPU transfers.",56,251,500,size=8.3,leading=12,limit=72)
+panel(44,62,524,105)
+text(56,149,"LIMITATIONS & NEXT STEPS",9,orange,True)
+paragraph("Synthetic signals only; one principal architecture and seed; one locked held-out evaluation. No validated classical DSP baseline, real-sensor testing, or FPGA deployment. Next: classical baselines, regularization, multiple seeds, real data, and hardware inference measurements.",56,135,500,size=8.3,leading=12,limit=72)
 footer(1)
-c.showPage()
-
-# PAGE TWO — PERFORMANCE AND ENGINEERING IMPLICATIONS
-header("PERFORMANCE & NEXT STEPS")
-text(44, 708, "What the experiments revealed", 21, navy, True)
-text(44, 683, "Reproducibility, unexpected outcomes, and engineering lessons",
-     10.2, muted)
-
-panel(44, 374, 524, 282)
-text(60, 631, "02  /  CPU VERSUS CUDA", 10, navy, True)
-image_fit("cpu_cuda_epoch_benchmark.png", 61, 400, 490, 218)
-text(60, 385, "Figure 2. Five warmed-up runs; float64 and batch size 64.",
-     7.8, muted)
-
-for x, value, label in [
-    (44, f"{cpu:.2f} ms", "CPU median epoch"),
-    (222, f"{gpu:.2f} ms", "CUDA median epoch"),
-    (400, f"{ratio:.3f}x", "CUDA / CPU time"),
-]:
-    panel(x, 306, 168, 57)
-    text(x+12, 328, value, 15, navy, True)
-    text(x+12, 313, label, 8, muted)
-
-panel(44, 183, 254, 112)
-panel(310, 183, 258, 112)
-text(58, 272, "NUMERICAL EQUIVALENCE", 9.2, blue, True)
-paragraph(
-    f"CPU and CUDA learning metrics matched across 61 archived "
-    f"checkpoints. Maximum absolute metric difference: {difference:.3e}. "
-    "Both harnesses shared NumPy metric evaluation.",
-    58, 258, 226, size=8.8, leading=12.3, limit=72
-)
-text(324, 272, "WHAT WE LEARNED", 9.2, blue, True)
-paragraph(
-    "GPU acceleration is not automatically faster. "
-    "This specific small-workload benchmark favored CPU execution. "
-    "The finding does not establish general CPU superiority.",
-    324, 258, 225, size=8.8, leading=12.3, limit=72
-)
-
-panel(44, 60, 254, 112)
-panel(310, 60, 258, 112)
-text(58, 149, "RESEARCH LIMITATIONS", 9.2, orange, True)
-paragraph(
-    "Synthetic data only; one principal architecture and seed; "
-    "a single locked held-out evaluation. No real-sensor, "
-    "embedded, or FPGA deployment has been demonstrated.",
-    58, 135, 226, size=8.8, leading=12.3, limit=70
-)
-text(324, 149, "NEXT RESEARCH DIRECTIONS", 9.2, blue, True)
-paragraph(
-    "Classical signal baselines, regularization, real sensor signals, "
-    "cross-seed analysis, quantization, FPGA inference, "
-    "latency, resource use, and power measurements.",
-    324, 135, 225, size=8.8, leading=12.3, limit=70
-)
-
-footer(2)
 c.save()
-
 qa = pub / "qa"
 qa.mkdir(exist_ok=True)
 with pymupdf.open(out) as pdf:
-    assert len(pdf) == 2, "Brief must be exactly two pages"
+    assert len(pdf) == 1, "Brief must be exactly one page"
     images = sum(len(page.get_image_info()) for page in pdf)
     assert images >= 2, "Missing research charts"
     content = "\n".join(p.get_text() for p in pdf)
-    assert "78.78%" in content and "NUMERICAL EQUIVALENCE" in content
+    assert "78.78%" in content and "WHAT THE EXPERIMENTS SHOW" in content
     previews = []
     for index, page in enumerate(pdf):
         pix = page.get_pixmap(matrix=pymupdf.Matrix(1.25, 1.25), alpha=False)
@@ -230,6 +154,6 @@ with pymupdf.open(out) as pdf:
         offset += preview.width
     sheet.save(qa / "project_brief_contact_sheet.png")
 print("OUTPUT:", out)
-print("PAGES: 2 | EMBEDDED FIGURES:", images)
+print("PAGES: 1 | EMBEDDED FIGURES:", images)
 print("CONTACT SHEET:", qa / "project_brief_contact_sheet.png")
 print("SIGNALDNA-PROJECT-BRIEF-244: PASS")

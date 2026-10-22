@@ -18,3 +18,18 @@ Report majority-class reference and conventional detector results.
 
 ## Release Gate
 All required deterministic tests pass; failures and limitations documented.
+
+## Final Verification Reconciliation
+
+Status: Evidence-based scope reconciliation; the preceding M0 verification plan remains historical.
+
+- V01: Signal generation properties and deterministic behavior covered by passing unit tests.
+- V02: Dataset dimensions, balance, reproducibility, and cross-split duplicate checks covered by passing unit tests.
+- V03: Analytical gradients checked against finite differences in passing unit tests.
+- V04: Learning behavior and reproducible training epochs covered by passing unit tests.
+- V05: Deterministic tests, archived CPU/CUDA equivalence, and checkpoint reconstruction verified within documented configurations.
+- V06: Controlled standalone classical DSP detector baseline not established; the balanced 50% reference is not a DSP benchmark.
+- V07: One authorized final held-out evaluation completed; broad mutation robustness and multi-seed generalization not established.
+- V08: Research results, experimental configurations, plots, limitations, and publication drafts archived.
+- The 55 discovered CPU unit tests passed using freshly installed dependencies in both an isolated older checkout and the current source revision.
+- These results do not imply universal correctness, real-world generalization, or FPGA/embedded performance.

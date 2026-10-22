@@ -63,6 +63,10 @@ New experiments informed by the final held-out result must be identified as expl
 The project uses synthetic signal classification, one principal neural-network architecture and training seed, and the tested local hardware configuration. It has not established real-world embedded or FPGA deployment performance.
 
 Clean-checkout installation and reproduction instructions still require final verification before publication.
+## Public checkpoint reconstruction instructions
+
+See docs/CHECKPOINT_RECONSTRUCTION.md for the isolated procedure, expected SHA-256 hashes, and safeguards.
+
 ## Verified isolated checkpoint reconstruction
 
 On 2026-10-21, both checkpoints were regenerated from committed source in an isolated detached Git worktree without pre-existing checkpoint files. The existing project Python environment was reused; this was not a clean dependency-installation test.

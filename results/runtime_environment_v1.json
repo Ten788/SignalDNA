@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "purpose": "Current research environment capture",
+  "captured_utc": "2026-10-21T22:45:00.326513+00:00",
+  "historical_benchmark_environment_verified": false,
+  "git_head": "46a8fd43676090f8808e7eae2f1a661230db7014",
+  "python": "3.13.15",
+  "python_implementation": "CPython",
+  "operating_system": "Windows",
+  "operating_system_release": "11",
+  "machine_architecture": "AMD64",
+  "numpy": "2.5.4",
+  "pytorch": "2.11.0+cu128",
+  "pytorch_cuda_build": "12.8",
+  "cuda_available": true,
+  "float32_matmul_precision": "highest",
+  "packages": {
+    "numpy": "2.5.4",
+    "torch": "2.11.0+cu128",
+    "scipy": null,
+    "scikit-learn": null,
+    "pytest": null,
+    "matplotlib": "3.11.2",
+    "pandas": null
+  },
+  "cpu_model": "13th Gen Intel(R) Core(TM) i9-13900H",
+  "cuda_devices": [
+    {
+      "index": 0,
+      "name": "NVIDIA GeForce RTX 4070 Laptop GPU",
+      "total_memory_bytes": 8585216000,
+      "compute_capability": [
+        8,
+        9
+      ]
+    }
+  ],
+  "cudnn_version": 91900
+}
