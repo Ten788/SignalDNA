@@ -72,4 +72,4 @@ Future work may investigate conventional signal-processing baselines, real senso
 
 Initial research study completed; manuscript and release package under review. Not peer reviewed.
 
-The project is not yet publicly released. An open-source license has not been selected or granted.
+The project is not yet publicly released. Selected license: Apache License 2.0 (see LICENSE). Public release remains pending.
