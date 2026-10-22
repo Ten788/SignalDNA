@@ -1,0 +1,20 @@
+{
+  "step": 247,
+  "heldout_sha256": "B8DC3B0EDF1054248F8245184B56FB67BB1DC5F452B770FDF710D5B34F4F7CA8",
+  "artifacts": [
+    {
+      "path": "docs/publication/SignalDNA_Research_Paper_DRAFT.pdf",
+      "pages": 7,
+      "images": 3,
+      "bytes": 386413,
+      "sha256": "5BBE0A91610864005EB687A3A5E91059FB71E6F689B4F9CC301749E4D8DC3CBD"
+    },
+    {
+      "path": "docs/publication/SignalDNA_Project_Brief_DRAFT.pdf",
+      "pages": 2,
+      "images": 2,
+      "bytes": 231605,
+      "sha256": "139999FCB67B79F75AAACAA58513DCCC29E9EE25453ED95147F8D11160F1A27C"
+    }
+  ]
+}
