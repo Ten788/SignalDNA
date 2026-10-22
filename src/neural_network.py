@@ -3,6 +3,7 @@
 Architecture: 1024 inputs -> 64 ReLU -> 32 ReLU -> 1 sigmoid output.
 This module is the mathematical reference for later CPU/CUDA comparisons.
 """
+from pathlib import Path
 
 import numpy as np
 
@@ -195,6 +196,7 @@ def save_parameters(path, parameters):
             raise ValueError("Non-finite parameter")
         arrays[f"weights_{index}"] = weights
         arrays[f"biases_{index}"] = biases
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
     np.savez(path, **arrays)
 def load_parameters(path):
     """Load and validate a NumPy model checkpoint without pickle.
