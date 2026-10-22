@@ -32,7 +32,7 @@ SignalDNA uses a deterministic synthetic binary-classification dataset containin
 
 Each dataset split is exactly class-balanced. Class 0 contains background waveforms; class 1 contains background waveforms with an added localized Gaussian transient. The splits contain 8,400 training examples, 1,800 validation examples, and 1,800 held-out test examples.
 
-Separate pseudorandom streams are derived using NumPy SeedSequence.spawn(3), with parent seed 2026. This separates the streams but does not mathematically guarantee waveform uniqueness. The held-out test set has not been evaluated in the reported experiments.
+Separate pseudorandom streams are derived using NumPy SeedSequence.spawn(3), with parent seed 2026 [2]. This separates the streams but does not mathematically guarantee waveform uniqueness. The held-out test set was evaluated once after the checkpoint selection and evaluation protocol were locked.
 
 ### Background waveform generation
 
@@ -62,7 +62,7 @@ The transient width is a fraction of waveform duration, not a value in seconds. 
 
 The classifier is a fully connected feedforward network with layer dimensions 1024-64-32-1. The two hidden layers use rectified linear unit activations. The output layer uses a sigmoid activation to estimate the positive-class probability.
 
-Weights are initialized using a seeded standard normal distribution scaled by sqrt(2/fan_in), including the output layer. All biases are initialized to zero.
+Weights are initialized using a seeded standard normal distribution scaled by sqrt(2/fan_in), including the output layer [1]. All biases are initialized to zero.
 
 The reference implementation uses NumPy float64 arithmetic and a numerically stable sigmoid evaluation.
 
@@ -96,7 +96,7 @@ Reported measurements characterize these implementations on the tested hardware;
 
 ### Evaluation and checkpoint selection
 
-The classification threshold was fixed at 0.5. ROC-AUC was calculated using average ranks, with tied positive-negative score pairs receiving half credit. The evaluation implementation agreed with an independent pairwise reference across 104 synthetic verification cases.
+The classification threshold was fixed at 0.5. ROC-AUC was calculated using average ranks, with tied positive-negative score pairs receiving half credit [4]. The evaluation implementation agreed with an independent pairwise reference across 104 synthetic verification cases.
 
 The primary model was selected at epoch 60 for the highest recorded validation ROC-AUC, with earliest epoch breaking ties. A secondary epoch-48 checkpoint minimized validation loss. Both checkpoints reproduced archived validation metrics before the held-out evaluation.
 
@@ -155,6 +155,8 @@ The computational results also challenge a simplistic assumption that a GPU must
 
 A major practical lesson is the importance of verification discipline: comparing independent implementations, maintaining immutable evidence, separating validation from held-out testing, and preserving unexpected negative results.
 
+PyTorch documents asynchronous CUDA execution and the need for synchronization or CUDA events when measuring device execution time [3]. Benchmark timing boundaries must be reviewed against the archived scripts before publication.
+
 ## 5. Limitations
 
 The dataset is entirely synthetic and represents a constrained family of waveform-generating processes. The findings do not establish performance on real sensor recordings, changing acquisition conditions, or unfamiliar noise distributions.
@@ -187,4 +189,10 @@ Beyond these numerical results, the project established a reproducible learning 
 
 ## References
 
-Authoritative references and software citations require verification before publication.
+[1] He, K., Zhang, X., Ren, S., and Sun, J. (2015). Delving Deep into Rectifiers: Surpassing Human-Level Performance on ImageNet Classification. Proceedings of ICCV, pp. 1026-1034. https://openaccess.thecvf.com/content_iccv_2015/html/He_Delving_Deep_into_ICCV_2015_paper.html
+
+[2] NumPy Developers. numpy.random.SeedSequence. https://numpy.org/doc/stable/reference/random/bit_generators/generated/numpy.random.SeedSequence.html
+
+[3] PyTorch Contributors. CUDA Semantics. https://docs.pytorch.org/docs/stable/notes/cuda.html
+
+[4] scikit-learn Developers. roc_auc_score. https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_auc_score.html
