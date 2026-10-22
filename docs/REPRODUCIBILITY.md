@@ -63,3 +63,16 @@ New experiments informed by the final held-out result must be identified as expl
 The project uses synthetic signal classification, one principal neural-network architecture and training seed, and the tested local hardware configuration. It has not established real-world embedded or FPGA deployment performance.
 
 Clean-checkout installation and reproduction instructions still require final verification before publication.
+## Verified isolated checkpoint reconstruction
+
+On 2026-10-21, both checkpoints were regenerated from committed source in an isolated detached Git worktree without pre-existing checkpoint files. The existing project Python environment was reused; this was not a clean dependency-installation test.
+
+- Source baseline: commit 1a23cca.
+- Final 60-epoch checkpoint SHA-256: 846137EE4333F7FAC7990E29FD6F7D0EAA59E6D1153F9A6BF6775F9C21A72975.
+- Best-validation checkpoint SHA-256: 1D1D72CD6D68659AE9DD4001AC21842A59921CDF9807910966B03EC2B938A243.
+- Both regenerated archives matched their original SHA-256 fingerprints exactly.
+- The isolated checkout initially lacked the Git-ignored checkpoints directory. Creating that directory enabled successful reconstruction.
+- Commit 108bf1a subsequently updated save_parameters to create the destination directory automatically.
+- All 55 existing unit tests passed after the directory-creation change.
+
+The final held-out evaluation was not repeated. Fresh-environment installation verification remains outstanding.
